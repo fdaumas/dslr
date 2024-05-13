@@ -1,4 +1,5 @@
 import sys
+import pandas as pd
 
 from getData import get_data
 from listNumerical import list_numerical
@@ -36,6 +37,33 @@ def describe(df, list_col):
     print('')
 
 
+def describe_loulou_ver(df, list_col, filename="describe.csv"):
+    list_stats = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
+    new_df = pd.DataFrame(index=list_stats, columns=list_col)
+    for col in list_col:
+        # new_df[col]['count'] = count(df, col)
+        new_df.loc['count', col] = count(df, col)
+        # new_df[col]['mean'] = mean(df, col)
+        new_df.loc['mean', col] = mean(df, col)
+        # new_df[col]['std'] = std(df, col)
+        new_df.loc['std', col] = std(df, col)
+        # new_df[col]['min'] = min(df, col)
+        new_df.loc['min', col] = min(df, col)
+        # new_df[col]['25%'] = quantile(df, col, 0.25)
+        new_df.loc['25%', col] = quantile(df, col, 0.25)
+        # new_df[col]['50%'] = quantile(df, col, 0.50)
+        new_df.loc['50%', col] = quantile(df, col, 0.50)
+        # new_df[col]['75%'] = quantile(df, col, 0.75)
+        new_df.loc['75%', col] = quantile(df, col, 0.75)
+        # new_df[col]['max'] = max(df, col)
+        new_df.loc['max', col] = max(df, col)
+    
+    # write in a csv
+    new_df.to_csv(filename)
+
+    return new_df
+
+
 if __name__ == "__main__":
     argv = sys.argv
     if len(argv) < 2:
@@ -47,4 +75,10 @@ if __name__ == "__main__":
         exit()
     df = get_data(file_name)
     list_col = list_numerical(df)
-    describe(df, list_col)
+
+    # describe(df, list_col)
+
+    file_name = file_name[:-4]
+    split = file_name.split('/')
+
+    print(describe_loulou_ver(df, list_col, split[-1] + "_describe.csv"))

@@ -33,11 +33,13 @@ def mean(df, col):
             mean of the column col
     """
     data = df[col]
+    my_count = count(df, col)
     sum = 0
     for i in range(len(data)):
         if not math.isnan(data[i]):
             sum += data[i]
-    sum /= count(df, col)
+    if my_count != 0:
+        sum /= my_count
     return sum
 
 
@@ -51,7 +53,10 @@ def std(df, col):
             standard deviation of the column col
     """
     my_mean = mean(df, col)
-    res = math.sqrt(sum([(x - my_mean) ** 2 for x in df[col] if not math.isnan(x)]) / count(df, col))
+    my_count = count(df, col)
+    if my_count == 0:
+        return 0
+    res = math.sqrt(sum([(x - my_mean) ** 2 for x in df[col] if not math.isnan(x)]) / my_count)
     return res
 
 
