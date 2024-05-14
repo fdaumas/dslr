@@ -1,40 +1,81 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import copy
 
 from matplotlib import colors
 from matplotlib.ticker import PercentFormatter
+from getData import get_data
+from listNumerical import list_numerical
+from describe import describe
+from statsTools import std
+import sys
 
-# Create a random number generator with a fixed seed for reproducibility
 
-if __name__ == '__main__':
-    rng = np.random.default_rng(19680801)
+def histogram(df):
+    house = np.unique(df[['Hogwarts House']])
+    if len(house) < 1:
+        print('this csv not include a single Hogwarts House')
+        exit()
 
-    N_points = 100000
-    n_bins = 20
+    num_df = list_numerical(df)
+    desc = describe(df, num_df)
 
-# Generate two normal distributions
-    dist1 = rng.standard_normal(N_points)
-    dist2 = 0.4 * rng.standard_normal(N_points) + 5
+    new_df = copy.deepcopy(df)
+    for col in num_df:
+        new_df[[col]] = (df[[col]] - desc[col]['min']) / (desc[col]['max'] - desc[col]['min'])
 
-    fig, axs = plt.subplots(1, 1, tight_layout=True)
+    # print(new_df)
 
-# N is the count in each bin, bins is the lower-limit of the bin
-    N, bins, patches = axs.hist(dist1, bins=n_bins)
+    # N_points = 1000
+    # rng = np.random.default_rng(19680801)
+    # dist1 = rng.standard_normal(N_points)
+    # print(dist1[5])
 
-# We'll color code by height, but you could use any scalar
-    fracs = N / N.max()
+    fig, axs = plt.subplots(1, len(house), tight_layout=True)
 
-# we need to normalize the data to 0..1 for the full range of the colormap
-    norm = colors.Normalize(fracs.min(), fracs.max())
+    df_house = new_df.groupby(['Hogwarts House'])
+    # print(df_house.get_group(house[0]))
+    for i in range(len(house)):
+        cp = copy.deepcopy(df_house.get_group((house[i],)))
+        cp = cp.dropna()
+        print(cp)
+        dist = []
+        for col in num_df:
+            dist.append(std(cp, col))
+    #     N, bins, patches = axs.hist[i](dist, bins=len(num_df))
+    #     fracs = N / N.max()
+    #     norm = colors.Normalize(fracs.min(), fracs.max())
+    #     for thisfrac, thispatch in zip(fracs, patches):
+    #         color = plt.cm.viridis(norm(thisfrac))
+    #         thispatch.set_facecolor(color)
+    # plt.show()
 
-# Now, we'll loop through our objects and set the color of each accordingly
-    for thisfrac, thispatch in zip(fracs, patches):
-        color = plt.cm.viridis(norm(thisfrac))
-        thispatch.set_facecolor(color)
 
-# We can also normalize our inputs by the total number of counts
-    # axs[1].hist(dist1, bins=n_bins, density=True)
+if __name__ == "__main__":
+    argv = sys.argv
+    if len(argv) < 2:
+        print("give .csv file name as argument")
+        exit()
+    file_name = argv[1]
+    if file_name[-4:] != ".csv":
+        print("give .csv file name as argument")
+        exit()
+    df = get_data(file_name)
+    # print("Choose the 1st column for scatter plot:")
+    # for i in range(len(org_list_col)):
+    #     print(f"{i+1}. {org_list_col[i]}")
+    # col1 = 'a'
+    # while not col1.isdigit():
+    #     col1 = input("Enter the column number: ")
+    # col1 = int(col1)
+    # list_col = copy.deepcopy(org_list_col)
+    # list_col = list_col.drop(org_list_col[col1-1])
+    # print("Choose the 2nd column for scatter plot:")
+    # for i in range(len(list_col)):
+    #     print(f"{i+1}. {list_col[i]}")
+    # col2 = 'a'
+    # while not col2.isdigit():
+    #     col2 = input("Enter the column number: ")
+    # scatter_plot(df, org_list_col[col1-1], list_col[int(col2)-1])
 
-# Now we format the y-axis to display percentage
-    # axs[1].yaxis.set_major_formatter(PercentFormatter(xmax=1))
-    plt.show()
+    histogram(df)
