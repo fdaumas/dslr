@@ -38,7 +38,10 @@ if __name__ == "__main__":
     for i in range(len(org_list_col)):
         print(f"{i+1}. {org_list_col[i]}")
     col1 = 'a'
-    while not col1.isdigit():
+    while (
+        not col1.isdigit()
+        or int(col1) < 1 or int(col1) > len(org_list_col)
+    ):
         col1 = input("Enter the column number: ")
     col1 = int(col1)
     list_col = copy.deepcopy(org_list_col)
@@ -47,6 +50,6 @@ if __name__ == "__main__":
     for i in range(len(list_col)):
         print(f"{i+1}. {list_col[i]}")
     col2 = 'a'
-    while not col2.isdigit():
+    while not col2.isdigit() or int(col2) < 1 or int(col2) > len(list_col):
         col2 = input("Enter the column number: ")
     scatter_plot(df, org_list_col[col1-1], list_col[int(col2)-1])
