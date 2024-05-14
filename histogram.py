@@ -13,6 +13,7 @@ import sys
 
 
 def histogram(df):
+    color = {'Gryffindor': '#ae0001', 'Hufflepuff': '#ecb939', 'Ravenclaw': '#1f82cc', 'Slytherin': '#096A09'}
     house = np.unique(df[['Hogwarts House']])
     if len(house) < 1:
         print('this csv not include a single Hogwarts House')
@@ -37,27 +38,9 @@ def histogram(df):
 
     fig, axs = plt.subplots(1, len(house), tight_layout=True)
 
-    for index in new_df_house_sort:
-        print(index)
-        # N, bins, patches = axs.hist[index](new_df_house_sort.iloc[[index]], bins=len(num_df))
-    # hey = new_df_house_sort.hist(bins=len(num_df))
-
     new_df_house_sort = new_df_house_sort.transpose()
-    print(new_df_house_sort)
     for i in range(len(house)):
-        axs[i].hist(new_df_house_sort[house[i]], bins=len(num_df))
-
-    # for i in range(len(house)):
-    #     cp = copy.deepcopy(df_house.get_group((house[i],)))
-    #     dist = []
-    #     for col in num_df:
-    #         res_std = std(cp, col)
-    #         dist.append(res_std)
-    #     fracs = N / N.max()
-    #     norm = colors.Normalize(fracs.min(), fracs.max())
-    #     for thisfrac, thispatch in zip(fracs, patches):
-    #         color = plt.cm.viridis(norm(thisfrac))
-    #         thispatch.set_facecolor(color)
+        axs[i].hist(new_df_house_sort[house[i]], bins=len(num_df), color=color[house[i]])
     plt.show()
 
 
@@ -71,21 +54,4 @@ if __name__ == "__main__":
         print("give .csv file name as argument")
         exit()
     df = get_data(file_name)
-    # print("Choose the 1st column for scatter plot:")
-    # for i in range(len(org_list_col)):
-    #     print(f"{i+1}. {org_list_col[i]}")
-    # col1 = 'a'
-    # while not col1.isdigit():
-    #     col1 = input("Enter the column number: ")
-    # col1 = int(col1)
-    # list_col = copy.deepcopy(org_list_col)
-    # list_col = list_col.drop(org_list_col[col1-1])
-    # print("Choose the 2nd column for scatter plot:")
-    # for i in range(len(list_col)):
-    #     print(f"{i+1}. {list_col[i]}")
-    # col2 = 'a'
-    # while not col2.isdigit():
-    #     col2 = input("Enter the column number: ")
-    # scatter_plot(df, org_list_col[col1-1], list_col[int(col2)-1])
-
     histogram(df)
