@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import copy
 
 from matplotlib import colors
@@ -21,27 +22,34 @@ def histogram(df):
     desc = describe(df, num_df)
 
     new_df = copy.deepcopy(df)
+    new_df = new_df.dropna()
+    print(new_df)
     for col in num_df:
         new_df[[col]] = (df[[col]] - desc[col]['min']) / (desc[col]['max'] - desc[col]['min'])
-
-    # print(new_df)
-
-    # N_points = 1000
-    # rng = np.random.default_rng(19680801)
-    # dist1 = rng.standard_normal(N_points)
-    # print(dist1[5])
 
     fig, axs = plt.subplots(1, len(house), tight_layout=True)
 
     df_house = new_df.groupby(['Hogwarts House'])
+    print(type(new_df))
+    print(std(new_df, 'Potions'))
+    new_df_house_sort = pd.DataFrame(index=house, columns=num_df)
+    print(new_df_house_sort)
+    for col in num_df:
+        for h in house:
+            x = df_house.get_group((h,))
+            print(type(x))
+            print(x)
+            new_df_house_sort.loc[h, col] = std(x, col)
+    # print(new_df_house_sort)
     # print(df_house.get_group(house[0]))
-    for i in range(len(house)):
-        cp = copy.deepcopy(df_house.get_group((house[i],)))
-        cp = cp.dropna()
-        print(cp)
-        dist = []
-        for col in num_df:
-            dist.append(std(cp, col))
+    # for i in range(len(house)):
+    #     cp = copy.deepcopy(df_house.get_group((house[i],)))
+    #     cp = cp.dropna()
+    #     print(cp)
+    #     dist = []
+    #     for col in num_df:
+    #         res_std = std(cp, col)
+    #         dist.append(res_std)
     #     N, bins, patches = axs.hist[i](dist, bins=len(num_df))
     #     fracs = N / N.max()
     #     norm = colors.Normalize(fracs.min(), fracs.max())
