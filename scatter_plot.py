@@ -25,7 +25,7 @@ def scatter_plot(df, col1, col2):
 
 if __name__ == "__main__":
     argv = sys.argv
-    if len(argv) < 4:
+    if len(argv) < 2:
         print("give .csv file name as argument")
         exit()
     file_name = argv[1]
@@ -34,5 +34,19 @@ if __name__ == "__main__":
         exit()
     df = get_data(file_name)
     org_list_col = list_numerical(df)
-    
-    scatter_plot(df, argv[2], argv[3])
+    print("Choose the 1st column for scatter plot:")
+    for i in range(len(org_list_col)):
+        print(f"{i+1}. {org_list_col[i]}")
+    col1 = 'a'
+    while not col1.isdigit():
+        col1 = input("Enter the column number: ")
+    col1 = int(col1)
+    list_col = copy.deepcopy(org_list_col)
+    list_col = list_col.drop(org_list_col[col1-1])
+    print("Choose the 2nd column for scatter plot:")
+    for i in range(len(list_col)):
+        print(f"{i+1}. {list_col[i]}")
+    col2 = 'a'
+    while not col2.isdigit():
+        col2 = input("Enter the column number: ")
+    scatter_plot(df, org_list_col[col1-1], list_col[int(col2)-1])
