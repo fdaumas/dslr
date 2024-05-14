@@ -116,6 +116,37 @@ def max(df, col):
     return max
 
 
+def range(df, col):
+    """
+        argument:
+            df : dataframe
+            col : column of df
+
+        return:
+            range of values of the column col
+    """
+    my_min = min(df, col)
+    my_max = max(df, col)
+    return my_max - my_min
+
+
+def count_over_mean(df, col):
+    """
+        argument:
+            df : dataframe
+            col : column of df
+
+        return:
+            count number of values superior or equal to mean of the column col
+    """
+    my_mean = mean(df, col)
+    count = 0
+    for x in df[col]:
+        if x >= my_mean:
+            count += 1
+    return count
+
+
 if __name__ == "__main__":
     df = get_data("datasets/dataset_train.csv")
     collist = list_numerical(df)
@@ -137,6 +168,8 @@ if __name__ == "__main__":
         # print(f"true 75% : {df[col].quantile(0.75)}")
         print(f"max : {max(df, col)}")
         # print(f"true max : {df[col].max()}")
+        print(f"range : {range(df, col)}")
+        print(f"count over mean : {count_over_mean(df, col)}")
         print("\n")
 
     # for verify par hand if quantile is correct

@@ -4,6 +4,7 @@ import pandas as pd
 from getData import get_data
 from listNumerical import list_numerical
 from statsTools import mean, count, std, min, max, quantile
+from statsTools import range, count_over_mean
 
 
 # def describe(df, list_col):
@@ -59,7 +60,18 @@ from statsTools import mean, count, std, min, max, quantile
 
 
 def describe(df, list_col, filename="describe.csv"):
-    list_stats = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
+    list_stats = [
+        'count',
+        'mean',
+        'std',
+        'min',
+        '25%',
+        '50%',
+        '75%',
+        'max',
+        'range',
+        'count over mean'
+    ]
     new_df = pd.DataFrame(index=list_stats, columns=list_col)
     for col in list_col:
         # new_df[col]['count'] = count(df, col)
@@ -81,6 +93,8 @@ def describe(df, list_col, filename="describe.csv"):
         new_df.loc['75%', col] = quantile(df, col, 0.75)
         # new_df[col]['max'] = max(df, col)
         new_df.loc['max', col] = max(df, col)
+        new_df.loc['range', col] = range(df, col)
+        new_df.loc['count over mean', col] = count_over_mean(df, col)
 
     # write in a csv
     new_df.to_csv(filename)
