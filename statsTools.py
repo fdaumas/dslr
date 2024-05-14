@@ -17,8 +17,8 @@ def count(df, col):
             count of the column col
     """
     count = 0
-    for i in range(len(df[col])):
-        if not math.isnan(df[col][i]):
+    for x in df[col]:
+        if not math.isnan(x):
             count += 1
     return count
 
@@ -35,9 +35,9 @@ def mean(df, col):
     data = df[col]
     my_count = count(df, col)
     sum = 0
-    for i in range(len(data)):
-        if not math.isnan(data[i]):
-            sum += data[i]
+    for x in data:
+        if not math.isnan(x):
+            sum += x
     if my_count != 0:
         sum /= my_count
     return sum
@@ -71,9 +71,9 @@ def min(df, col):
     """
     data = df[col]
     min = data[0]
-    for i in range(len(data)):
-        if data[i] < min:
-            min = data[i]
+    for x in data:
+        if x < min:
+            min = x
     return min
 
 
@@ -110,9 +110,9 @@ def max(df, col):
     """
     data = df[col]
     max = data[0]
-    for i in range(len(data)):
-        if data[i] > max:
-            max = data[i]
+    for x in data:
+        if x > max:
+            max = x
     return max
 
 

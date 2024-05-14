@@ -23,6 +23,7 @@ def histogram(df):
 
     new_df = copy.deepcopy(df)
     new_df = new_df.dropna()
+
     print(new_df)
     for col in num_df:
         new_df[[col]] = (df[[col]] - desc[col]['min']) / (desc[col]['max'] - desc[col]['min'])
@@ -31,7 +32,6 @@ def histogram(df):
 
     df_house = new_df.groupby(['Hogwarts House'])
     print(type(new_df))
-    print(std(new_df, 'Potions'))
     new_df_house_sort = pd.DataFrame(index=house, columns=num_df)
     print(new_df_house_sort)
     for col in num_df:
@@ -40,23 +40,23 @@ def histogram(df):
             print(type(x))
             print(x)
             new_df_house_sort.loc[h, col] = std(x, col)
-    # print(new_df_house_sort)
-    # print(df_house.get_group(house[0]))
-    # for i in range(len(house)):
-    #     cp = copy.deepcopy(df_house.get_group((house[i],)))
-    #     cp = cp.dropna()
-    #     print(cp)
-    #     dist = []
-    #     for col in num_df:
-    #         res_std = std(cp, col)
-    #         dist.append(res_std)
-    #     N, bins, patches = axs.hist[i](dist, bins=len(num_df))
-    #     fracs = N / N.max()
-    #     norm = colors.Normalize(fracs.min(), fracs.max())
-    #     for thisfrac, thispatch in zip(fracs, patches):
-    #         color = plt.cm.viridis(norm(thisfrac))
-    #         thispatch.set_facecolor(color)
-    # plt.show()
+    print(new_df_house_sort)
+    print(df_house.get_group(house[0]))
+    for i in range(len(house)):
+        cp = copy.deepcopy(df_house.get_group((house[i],)))
+        cp = cp.dropna()
+        print(cp)
+        dist = []
+        for col in num_df:
+            res_std = std(cp, col)
+            dist.append(res_std)
+        N, bins, patches = axs.hist[i](dist, bins=len(num_df))
+        fracs = N / N.max()
+        norm = colors.Normalize(fracs.min(), fracs.max())
+        for thisfrac, thispatch in zip(fracs, patches):
+            color = plt.cm.viridis(norm(thisfrac))
+            thispatch.set_facecolor(color)
+    plt.show()
 
 
 if __name__ == "__main__":
