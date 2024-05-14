@@ -29,7 +29,9 @@ Tean project of 2 students : lburnet and fdaumas
 * create df : https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html
 * histogram : https://matplotlib.org/stable/gallery/statistics/hist.html
 * scatter plot : https://matplotlib.org/stable/plot_types/basic/scatter_plot.html#sphx-glr-plot-types-basic-scatter-plot-py
-* pair plot : https://seaborn.pydata.org/generated/seaborn.pairplot.html
+* pair plot : 
+	* https://seaborn.pydata.org/generated/seaborn.pairplot.html
+	* https://www.geeksforgeeks.org/python-seaborn-pairplot-method/
 * Logistic Regression :
 	* https://www.cs.rice.edu/~as143/COMP642_Spring22/Scribes/Lect5
 	* https://medium.com/analytics-vidhya/logistic-regression-from-scratch-multi-classification-with-onevsall-d5c2acf0c37c
