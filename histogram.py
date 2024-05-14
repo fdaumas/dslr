@@ -40,7 +40,12 @@ def histogram(df):
     for index in new_df_house_sort:
         print(index)
         # N, bins, patches = axs.hist[index](new_df_house_sort.iloc[[index]], bins=len(num_df))
-    hey = new_df_house_sort.hist(bins=len(num_df))
+    # hey = new_df_house_sort.hist(bins=len(num_df))
+
+    new_df_house_sort = new_df_house_sort.transpose()
+    print(new_df_house_sort)
+    for i in range(len(house)):
+        axs[i].hist(new_df_house_sort[house[i]], bins=len(num_df))
 
     # for i in range(len(house)):
     #     cp = copy.deepcopy(df_house.get_group((house[i],)))
