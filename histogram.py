@@ -22,40 +22,37 @@ def histogram(df):
     desc = describe(df, num_df)
 
     new_df = copy.deepcopy(df)
-    new_df = new_df.dropna()
 
-    print(new_df)
     for col in num_df:
         new_df[[col]] = (df[[col]] - desc[col]['min']) / (desc[col]['max'] - desc[col]['min'])
 
-    fig, axs = plt.subplots(1, len(house), tight_layout=True)
-
     df_house = new_df.groupby(['Hogwarts House'])
-    print(type(new_df))
     new_df_house_sort = pd.DataFrame(index=house, columns=num_df)
-    print(new_df_house_sort)
     for col in num_df:
         for h in house:
             x = df_house.get_group((h,))
-            print(type(x))
-            print(x)
             new_df_house_sort.loc[h, col] = std(x, col)
+    new_df_house_sort = new_df_house_sort.dropna()
     print(new_df_house_sort)
-    print(df_house.get_group(house[0]))
-    for i in range(len(house)):
-        cp = copy.deepcopy(df_house.get_group((house[i],)))
-        cp = cp.dropna()
-        print(cp)
-        dist = []
-        for col in num_df:
-            res_std = std(cp, col)
-            dist.append(res_std)
-        N, bins, patches = axs.hist[i](dist, bins=len(num_df))
-        fracs = N / N.max()
-        norm = colors.Normalize(fracs.min(), fracs.max())
-        for thisfrac, thispatch in zip(fracs, patches):
-            color = plt.cm.viridis(norm(thisfrac))
-            thispatch.set_facecolor(color)
+
+    fig, axs = plt.subplots(1, len(house), tight_layout=True)
+
+    for index in new_df_house_sort:
+        print(index)
+        # N, bins, patches = axs.hist[index](new_df_house_sort.iloc[[index]], bins=len(num_df))
+    hey = new_df_house_sort.hist(bins=len(num_df))
+
+    # for i in range(len(house)):
+    #     cp = copy.deepcopy(df_house.get_group((house[i],)))
+    #     dist = []
+    #     for col in num_df:
+    #         res_std = std(cp, col)
+    #         dist.append(res_std)
+    #     fracs = N / N.max()
+    #     norm = colors.Normalize(fracs.min(), fracs.max())
+    #     for thisfrac, thispatch in zip(fracs, patches):
+    #         color = plt.cm.viridis(norm(thisfrac))
+    #         thispatch.set_facecolor(color)
     plt.show()
 
 
