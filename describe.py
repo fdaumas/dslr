@@ -6,43 +6,67 @@ from listNumerical import list_numerical
 from statsTools import mean, count, std, min, max, quantile
 
 
-def describe(df, list_col):
-    print(f"{7* ' '}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{list_col[i][-13:]:>13s}", end=' | ')
-    print(f"\n{'count':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(count(df, list_col[i]))[:13]:>13s}", end=' | ')
-    print(f"\n{'mean':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(mean(df, list_col[i]))[:13]:>13s}", end=' | ')
-    print(f"\n{'std':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(std(df, list_col[i]))[:13]:>13s}", end=' | ')
-    print(f"\n{'min':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(min(df, list_col[i]))[:13]:>13s}", end=' | ')
-    print(f"\n{'25%':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(quantile(df, list_col[i], 0.25))[:13]:>13s}", end=' | ')
-    print(f"\n{'50%':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(quantile(df, list_col[i], 0.50))[:13]:>13s}", end=' | ')
-    print(f"\n{'75%':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(quantile(df, list_col[i], 0.75))[:13]:>13s}", end=' | ')
-    print(f"\n{'max':>7s}", end="| ")
-    for i in range(list_col.shape[0]):
-        print(f"{str(max(df, list_col[i]))[:13]:>13s}", end=" | ")
-    print('')
+# def describe(df, list_col):
+#         print(f"{7* ' '}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{list_col[i][-13:]:>13s}", end=' | ')
+#                 # '[-13:]' pour limiter a 13 char
+#                 # ':>13s' pour aligner a droite
+#                 # "end=' | '" pour echanger '\n' avec ' | '
+#         print(f"\n{'count':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(my_count)[:13]:>13s}", end=' | ')
+#         print(f"\n{'mean':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(mean(df, list_col[i]))[:13]:>13s}", end=' | ')
+#         print(f"\n{'std':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(std(df, list_col[i]))[:13]:>13s}", end=' | ')
+#         print(f"\n{'min':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(min(df, list_col[i]))[:13]:>13s}", end=' | ')
+#         print(f"\n{'25%':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(quantile(df, list_col[i], 0.25))[:13]:>13s}", end=' | ')
+#         print(f"\n{'50%':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(quantile(df, list_col[i], 0.50))[:13]:>13s}", end=' | ')
+#         print(f"\n{'75%':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(quantile(df, list_col[i], 0.75))[:13]:>13s}", end=' | ')
+#         print(f"\n{'max':>7s}", end="| ")
+#         for i in range(list_col.shape[0]):
+#             my_count = count(df, list_col[i])
+#             if my_count != 0:
+#                 print(f"{str(max(df, list_col[i]))[:13]:>13s}", end=" | ")
+#         print('')
 
 
-def describe_loulou_ver(df, list_col, filename="describe.csv"):
+def describe(df, list_col, filename="describe.csv"):
     list_stats = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
     new_df = pd.DataFrame(index=list_stats, columns=list_col)
     for col in list_col:
         # new_df[col]['count'] = count(df, col)
         new_df.loc['count', col] = count(df, col)
+        if new_df.loc['count', col] == 0:
+            new_df.drop(col, axis=1, inplace=True)
+            continue
         # new_df[col]['mean'] = mean(df, col)
         new_df.loc['mean', col] = mean(df, col)
         # new_df[col]['std'] = std(df, col)
@@ -81,4 +105,4 @@ if __name__ == "__main__":
     file_name = file_name[:-4]
     split = file_name.split('/')
 
-    print(describe_loulou_ver(df, list_col, split[-1] + "_describe.csv"))
+    print(describe(df, list_col, split[-1] + "_describe.csv"))
