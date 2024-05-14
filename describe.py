@@ -81,7 +81,7 @@ def describe(df, list_col, filename="describe.csv"):
         new_df.loc['75%', col] = quantile(df, col, 0.75)
         # new_df[col]['max'] = max(df, col)
         new_df.loc['max', col] = max(df, col)
-    
+
     # write in a csv
     new_df.to_csv(filename)
 
