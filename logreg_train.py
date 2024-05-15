@@ -5,6 +5,7 @@ from logreg_predict import logreg_predict
 from getData import get_data
 from describe import describe
 from tools import df_to_is_G_or_H, df_to_is_G_or_S, add_intercept
+from color import red, green, yellow, blue, reset, bold
 
 
 def gradient(x, y, theta):
@@ -34,11 +35,13 @@ def gradient(x, y, theta):
         return None
 
     x_prime_T = np.transpose(add_intercept(x))
-    print(f"x_prime_T = {x_prime_T}")
+    print(green + f"x_prime_T in gradienr = {x_prime_T}" + reset)
     m = x.shape[0]
-    print(f"m = {m}")
+    print(green + f"m in gradient = {m}" + reset)
     y_hat = logreg_predict(x, theta)
-    print(f"y_hat = {y_hat}")
+    print(green + f"y_hat in gradient = {y_hat}" + reset)
+    res_tmp = np.matmul(x_prime_T, y_hat - y)
+    print(green + f"res_tmp in gradient = {res_tmp}" + reset)
     res = 1 / m * np.matmul(x_prime_T, y_hat - y)
     return res
 
@@ -91,20 +94,25 @@ def fit_(theta, alpha, max_iter, x, y):
     for i in range(max_iter):
         # print(my_gradient)
         my_gradient = gradient(x, y, theta)
+        print(yellow + f"my_gradient in fit = {my_gradient}" + reset)
         if (isinstance(my_gradient, str)):
             return "error"
         # if (i > self.max_iter -10):
         #     print(f"g = {gradient[1]}")
         theta = theta - alpha * my_gradient
+        print(yellow + f"theta in fit = {theta}" + reset)
         # if (i % 10000 == 0):
         #     print(f"i = {i} et theta = {self.theta}")
     return theta
 
 
 def logreg_train(df):
-    gryffindor_or_hufflepuff_df = df_to_is_G_or_H(df)
-    gryffindor_or_slytherin_df = df_to_is_G_or_S(df)
-    note_df = copy.deepcopy(df)
+    tmp_df = copy.deepcopy(df)
+    tmp_df = tmp_df[['Hogwarts House', 'Herbology', 'Ancient Runes']]
+    tmp_df = tmp_df.dropna()
+    gryffindor_or_hufflepuff_df = df_to_is_G_or_H(tmp_df)
+    gryffindor_or_slytherin_df = df_to_is_G_or_S(tmp_df)
+    note_df = copy.deepcopy(tmp_df)
     note_df = note_df[['Ancient Runes', 'Herbology']]
     describe_df = describe(note_df, ['Ancient Runes', 'Herbology'])
     for col in note_df:
@@ -114,12 +122,12 @@ def logreg_train(df):
         )
     x = note_df.to_numpy()
     y_G_or_H = gryffindor_or_hufflepuff_df[['is_Gryffindor_or_Hufflepuff']].to_numpy()
-    print(describe_df)
-    print(gryffindor_or_hufflepuff_df)
-    print(note_df)
+    # print(describe_df)
+    # print(gryffindor_or_hufflepuff_df)
+    # print(note_df)
     theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
-    theta_G_or_H = fit_(theta_G_or_H, 0.001, 10, x, y_G_or_H)
-    print(theta_G_or_H)
+    theta_G_or_H = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_H)
+    print(f"theta_G_or_H = {theta_G_or_H}")
 
 
 

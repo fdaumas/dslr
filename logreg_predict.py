@@ -4,6 +4,7 @@ import pandas as pd
 
 from tools import add_intercept, sigmoid
 from getData import get_data
+from color import red, green, yellow, blue, reset
 
 
 # from bootcamp machine learning module 08 ex03
@@ -31,7 +32,9 @@ def logreg_predict(x, theta):
         return None
 
     x_prime = add_intercept(x)
+    print(blue + f"x_prime in logreg_predict: {x_prime}" + reset)
     y_hat = sigmoid(np.matmul(x_prime, theta))
+    print(blue + f"y_hat in logreg_predict: {y_hat}" + reset)
     return y_hat
 
 

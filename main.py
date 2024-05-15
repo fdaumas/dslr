@@ -7,17 +7,10 @@ from describe import describe
 from histogram import histogram
 from scatter_plot import scatter_plot
 from pair_plot import pair_plot
+from color import red, green, yellow, blue, reset, bold
 
 
 if __name__ == '__main__':
-    # text color
-    reset = '\033[0m'
-    bold = '\033[01m'
-    green = '\033[32m'
-    red = '\033[31m'
-    yellow = '\033[33m'
-    blue = '\033[34m'
-
     argv = sys.argv
     if len(argv) < 3:
         print(red + "give 2 .csv file name as argument" + reset)
