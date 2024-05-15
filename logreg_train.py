@@ -36,13 +36,13 @@ def gradient(x, y, theta):
         return None
 
     x_prime_T = np.transpose(add_intercept(x))
-    print(green + f"x_prime_T in gradienr = {x_prime_T}" + reset)
+    # print(green + f"x_prime_T in gradienr = {x_prime_T}" + reset)
     m = x.shape[0]
-    print(green + f"m in gradient = {m}" + reset)
+    # print(green + f"m in gradient = {m}" + reset)
     y_hat = logreg_predict(x, theta)
-    print(green + f"y_hat in gradient = {y_hat}" + reset)
+    # print(green + f"y_hat in gradient = {y_hat}" + reset)
     res_tmp = np.matmul(x_prime_T, y_hat - y)
-    print(green + f"res_tmp in gradient = {res_tmp}" + reset)
+    # print(green + f"res_tmp in gradient = {res_tmp}" + reset)
     res = 1 / m * np.matmul(x_prime_T, y_hat - y)
     return res
 
@@ -95,13 +95,13 @@ def fit_(theta, alpha, max_iter, x, y):
     for i in range(max_iter):
         # print(my_gradient)
         my_gradient = gradient(x, y, theta)
-        print(yellow + f"my_gradient in fit = {my_gradient}" + reset)
+        # print(yellow + f"my_gradient in fit = {my_gradient}" + reset)
         if (isinstance(my_gradient, str)):
             return "error"
         # if (i > self.max_iter -10):
         #     print(f"g = {gradient[1]}")
         theta = theta - alpha * my_gradient
-        print(yellow + f"theta in fit = {theta}" + reset)
+        # print(yellow + f"theta in fit = {theta}" + reset)
         # if (i % 10000 == 0):
         #     print(f"i = {i} et theta = {self.theta}")
     return theta
@@ -127,12 +127,14 @@ def logreg_train(df):
     # print(describe_df)
     # print(gryffindor_or_hufflepuff_df)
     # print(note_df)
+    max_iter = 1000
+    learning_rate = 0.5
     theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
-    theta_G_or_H = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_H)
+    theta_G_or_H = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_H)
     theta_G_or_S = np.array([1, 1, 1]).reshape(-1, 1)
-    theta_G_or_S = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_S)
-    print(f"theta_G_or_H = {theta_G_or_H}")
-    print(f"theta_G_or_S = {theta_G_or_S}")
+    theta_G_or_S = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_S)
+    # print(f"theta_G_or_H = {theta_G_or_H}")
+    # print(f"theta_G_or_S = {theta_G_or_S}")
     theta_df = pd.DataFrame(index=[0], columns=['theta_G_or_H', 'theta_G_or_S'])
     theta_df.loc[0, 'theta_G_or_H'] = theta_G_or_H
     theta_df.loc[0, 'theta_G_or_S'] = theta_G_or_S
