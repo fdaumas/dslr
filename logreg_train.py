@@ -1,6 +1,10 @@
 import numpy as np
+import copy
 
 from logreg_predict import logreg_predict
+from getData import get_data
+from describe import describe
+from tools import df_to_is_G_or_H, df_to_is_G_or_S, add_intercept
 
 
 def gradient(x, y, theta):
@@ -18,6 +22,7 @@ def gradient(x, y, theta):
     Raises:
             This function should not raise any Exception.
     """
+    print('debug')
     if (
         not isinstance(x, np.ndarray)
         or not isinstance(y, np.ndarray)
@@ -28,6 +33,7 @@ def gradient(x, y, theta):
         return None
     if x.shape[0] != y.shape[0] or x.shape[1] + 1 != theta.shape[0]:
         return None
+
     x_prime_T = np.transpose(add_intercept(x))
     m = x.shape[0]
     y_hat = logreg_predict(x)
@@ -79,14 +85,55 @@ def fit_(theta, alpha, max_iter, x, y):
         print("x.shape[0] != y.shape[0] or x.shape[1] + 1 != theta.shape[0]")
         return None
 
-    gradient = np.ndarray(y.shape)
+    my_gradient = np.ones(y.shape)
     for i in range(max_iter):
-        gradient = gradient(x, y)
-        if (isinstance(gradient, str)):
+        print(my_gradient)
+        my_gradient = gradient(x, y, theta)
+        if (isinstance(my_gradient, str)):
             return "error"
         # if (i > self.max_iter -10):
         #     print(f"g = {gradient[1]}")
-        theta = theta - alpha * gradient
+        theta = theta - alpha * my_gradient
         # if (i % 10000 == 0):
         #     print(f"i = {i} et theta = {self.theta}")
     return theta
+
+
+def logreg_train(df):
+    gryffindor_or_hufflepuff_df = df_to_is_G_or_H(df)
+    gryffindor_or_slytherin_df = df_to_is_G_or_S(df)
+    note_df = copy.deepcopy(df)
+    note_df = note_df[['Ancient Runes', 'Herbology']]
+    describe_df = describe(note_df, ['Ancient Runes', 'Herbology'])
+    for col in note_df:
+        note_df[[col]] = (
+            note_df[[col]] - describe_df[col]['min']) / (
+            describe_df[col]['max'] - describe_df[col]['min']
+        )
+    x = note_df.to_numpy()
+    y_G_or_H = gryffindor_or_hufflepuff_df[['is_Gryffindor_or_Hufflepuff']].to_numpy()
+    print(describe_df)
+    print(gryffindor_or_hufflepuff_df)
+    print(note_df)
+    theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
+    theta_G_or_H = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_H)
+    print(theta_G_or_H)
+
+
+
+if __name__ == "__main__":
+    df = get_data('datasets/dataset_train.csv')
+    # get G or H df
+    # get notes_df
+    # get y from G or H df
+    # get x from notes df
+    # init theta
+    # init alpha
+    # init max_iter
+    # launch fit_
+    # save theta as theta_G_or_H
+
+    # pareil avev G or S
+    # save theta as theta_G_or_S
+    # return both thetas
+    logreg_train(df)
