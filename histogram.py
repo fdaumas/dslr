@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import copy
 
-from matplotlib import colors
-from matplotlib.ticker import PercentFormatter
 from getData import get_data
 from listNumerical import list_numerical
 from describe import describe
@@ -13,7 +11,12 @@ import sys
 
 
 def histogram(df):
-    color = {'Gryffindor': '#ae0001', 'Hufflepuff': '#ecb939', 'Ravenclaw': '#1f82cc', 'Slytherin': '#096A09'}
+    color = {
+        'Gryffindor': '#ae0001',
+        'Hufflepuff': '#ecb939',
+        'Ravenclaw': '#1f82cc',
+        'Slytherin': '#096A09'
+    }
     house = np.unique(df[['Hogwarts House']])
     if len(house) < 1:
         print('this csv not include a single Hogwarts House')
@@ -25,7 +28,10 @@ def histogram(df):
     new_df = copy.deepcopy(df)
 
     for col in num_df:
-        new_df[[col]] = (df[[col]] - desc[col]['min']) / (desc[col]['max'] - desc[col]['min'])
+        new_df[[col]] = (
+            df[[col]] - desc[col]['min']) / (
+            desc[col]['max'] - desc[col]['min']
+        )
 
     df_house = new_df.groupby(['Hogwarts House'])
     new_df_house_sort = pd.DataFrame(index=house, columns=num_df)
@@ -40,7 +46,11 @@ def histogram(df):
 
     new_df_house_sort = new_df_house_sort.transpose()
     for i in range(len(house)):
-        axs[i].hist(new_df_house_sort[house[i]], bins=len(num_df), color=color[house[i]])
+        axs[i].hist(
+            new_df_house_sort[house[i]],
+            bins=len(num_df),
+            color=color[house[i]]
+        )
     plt.show()
 
 

@@ -39,3 +39,6 @@ Tean project of 2 students : lburnet and fdaumas
 
 ### Notes
 * we choose Ancient Runes and Herbology for logistic regression
+* pour le predict en 2 fois :
+	* G and S -> bool
+	* G and H -> bool
