@@ -36,9 +36,15 @@ Tean project of 2 students : lburnet and fdaumas
 	* https://www.cs.rice.edu/~as143/COMP642_Spring22/Scribes/Lect5
 	* https://medium.com/analytics-vidhya/logistic-regression-from-scratch-multi-classification-with-onevsall-d5c2acf0c37c
     * https://www.youtube.com/watch?v=QqAUqRAWEV8
+* subject of bootcamp 42AI Module 08 : https://github.com/42-AI/bootcamp_machine-learning/releases
 
 ### Notes
 * we choose Ancient Runes and Herbology for logistic regression
-* pour le predict en 2 fois :
+* for predicting in 2 times :
 	* G and S -> bool
 	* G and H -> bool
+	* So if :
+		* G & H got 1 and G & S got 1 then result G
+		* G & H got 1 and G & S got 0 then result H
+		* G & H got 0 and G & S got 1 then result S
+		* G & H got 0 and G & S got 0 then result R
