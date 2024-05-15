@@ -36,3 +36,6 @@ Tean project of 2 students : lburnet and fdaumas
 	* https://www.cs.rice.edu/~as143/COMP642_Spring22/Scribes/Lect5
 	* https://medium.com/analytics-vidhya/logistic-regression-from-scratch-multi-classification-with-onevsall-d5c2acf0c37c
     * https://www.youtube.com/watch?v=QqAUqRAWEV8
+
+### Notes
+* we choose Ancient Runes and Herbology for logistic regression
