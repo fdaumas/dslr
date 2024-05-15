@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import pandas as pd
 
 from logreg_predict import logreg_predict
 from getData import get_data
@@ -122,13 +123,20 @@ def logreg_train(df):
         )
     x = note_df.to_numpy()
     y_G_or_H = gryffindor_or_hufflepuff_df[['is_Gryffindor_or_Hufflepuff']].to_numpy()
+    y_G_or_S = gryffindor_or_slytherin_df[['is_Gryffindor_or_Slytherin']].to_numpy()
     # print(describe_df)
     # print(gryffindor_or_hufflepuff_df)
     # print(note_df)
     theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
     theta_G_or_H = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_H)
+    theta_G_or_S = np.array([1, 1, 1]).reshape(-1, 1)
+    theta_G_or_S = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_S)
     print(f"theta_G_or_H = {theta_G_or_H}")
-
+    print(f"theta_G_or_S = {theta_G_or_S}")
+    theta_df = pd.DataFrame(index=[0], columns=['theta_G_or_H', 'theta_G_or_S'])
+    theta_df.loc[0, 'theta_G_or_H'] = theta_G_or_H
+    theta_df.loc[0, 'theta_G_or_S'] = theta_G_or_S
+    theta_df.to_csv('theta.csv')
 
 
 if __name__ == "__main__":
