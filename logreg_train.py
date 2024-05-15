@@ -22,7 +22,6 @@ def gradient(x, y, theta):
     Raises:
             This function should not raise any Exception.
     """
-    print('debug')
     if (
         not isinstance(x, np.ndarray)
         or not isinstance(y, np.ndarray)
@@ -35,8 +34,11 @@ def gradient(x, y, theta):
         return None
 
     x_prime_T = np.transpose(add_intercept(x))
+    print(f"x_prime_T = {x_prime_T}")
     m = x.shape[0]
-    y_hat = logreg_predict(x)
+    print(f"m = {m}")
+    y_hat = logreg_predict(x, theta)
+    print(f"y_hat = {y_hat}")
     res = 1 / m * np.matmul(x_prime_T, y_hat - y)
     return res
 
@@ -87,7 +89,7 @@ def fit_(theta, alpha, max_iter, x, y):
 
     my_gradient = np.ones(y.shape)
     for i in range(max_iter):
-        print(my_gradient)
+        # print(my_gradient)
         my_gradient = gradient(x, y, theta)
         if (isinstance(my_gradient, str)):
             return "error"
@@ -116,7 +118,7 @@ def logreg_train(df):
     print(gryffindor_or_hufflepuff_df)
     print(note_df)
     theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
-    theta_G_or_H = fit_(theta_G_or_H, 0.001, 1000, x, y_G_or_H)
+    theta_G_or_H = fit_(theta_G_or_H, 0.001, 10, x, y_G_or_H)
     print(theta_G_or_H)
 
 
