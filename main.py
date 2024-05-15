@@ -4,6 +4,7 @@ import copy
 from getData import get_data
 from listNumerical import list_numerical
 from describe import describe
+from histogram import histogram
 from scatter_plot import scatter_plot
 from pair_plot import pair_plot
 
@@ -61,6 +62,7 @@ if __name__ == '__main__':
                 visu = int(visu)
                 match visu:
                     case 1:  # Histogram
+                        histogram(df)
                         continue
 
                     case 2:  # scatter plot
