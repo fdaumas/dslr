@@ -7,7 +7,7 @@ from getData import get_data
 
 
 # from bootcamp machine learning module 08 ex03
-def logreg_predict(x, theta_GorH, theta_GorS):
+def logreg_predict(x, theta):
     """Computes the vector of prediction y_hat from two non-empty numpy.ndarray
     Args:
             x: has to be an numpy.ndarray, a vector of dimension m * n.
@@ -20,30 +20,19 @@ def logreg_predict(x, theta_GorH, theta_GorS):
     Raises:
             This function should not raise any Exception.
     """
-    if not isinstance(x, np.ndarray) or not isinstance(theta_GorH, np.ndarray):
+    if not isinstance(x, np.ndarray) or not isinstance(theta, np.ndarray):
         print("x or theta not a np.ndarray")
         return None
-    if theta_GorH.size == 0 or x.size == 0:
+    if theta.size == 0 or x.size == 0:
         print("x or theta is empty")
         return None
-    if theta_GorH.shape[0] != x.shape[1] + 1:
-        print("theta.shape[0] + 1 != x.shape[1]")
-        return None
-
-    if not isinstance(x, np.ndarray) or not isinstance(theta_GorS, np.ndarray):
-        print("x or theta not a np.ndarray")
-        return None
-    if theta_GorS.size == 0 or x.size == 0:
-        print("x or theta is empty")
-        return None
-    if theta_GorS.shape[0] != x.shape[1] + 1:
+    if theta.shape[0] != x.shape[1] + 1:
         print("theta.shape[0] + 1 != x.shape[1]")
         return None
 
     x_prime = add_intercept(x)
-    y_hat_GorH = sigmoid(np.matmul(x_prime, theta_GorH))
-    y_hat_GorS = sigmoid(np.matmul(x_prime, theta_GorS))
-    return [y_hat_GorH, y_hat_GorS]
+    y_hat = sigmoid(np.matmul(x_prime, theta))
+    return y_hat
 
 
 if __name__ == "__main__":
@@ -82,14 +71,15 @@ if __name__ == "__main__":
     theta_GorS = np.array([[-1.], [0.01], [0.01]])
 
     # get predictions
-    y_hat = logreg_predict(x, theta_GorH, theta_GorS)
-    if y_hat is None:
+    y_hat_GorH = logreg_predict(x, theta_GorH)
+    if y_hat_GorH is None:
         print("error in logreg_predict")
         exit()
+    y_hat_GorS = logreg_predict(x, theta_GorS)
 
     # from prediction to Hogwarts House
-    result['is_Gryffindor_or_Slytherin'] = y_hat[1]
-    result['is_Gryffindor_or_Hufflepuff'] = y_hat[0]
+    result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
+    result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
 
     result.loc[
         result['is_Gryffindor_or_Hufflepuff'] < 0.5
