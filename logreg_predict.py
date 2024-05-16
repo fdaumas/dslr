@@ -61,12 +61,6 @@ def from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, df):
     result['is_Ravenclaw'] = y_hat_R
     for i in result['Index']:
         if (
-            result.loc[i, 'is_Gryffindor'] > result.loc[i, 'is_Slytherin']
-            and result.loc[i, 'is_Gryffindor'] > result.loc[i, 'is_Hufflepuff']
-            and result.loc[i, 'is_Gryffindor'] > result.loc[i, 'is_Ravenclaw']
-        ):
-            result.loc[i, 'Hogwarts House'] = 'Gryffindor'
-        elif (
             result.loc[i, 'is_Slytherin'] > result.loc[i, 'is_Gryffindor']
             and result.loc[i, 'is_Slytherin'] > result.loc[i, 'is_Hufflepuff']
             and result.loc[i, 'is_Slytherin'] > result.loc[i, 'is_Ravenclaw']
@@ -78,8 +72,14 @@ def from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, df):
             and result.loc[i, 'is_Hufflepuff'] > result.loc[i, 'is_Ravenclaw']
         ):
             result.loc[i, 'Hogwarts House'] = 'Hufflepuff'
-        else:
+        elif (
+            result.loc[i, 'is_Ravenclaw'] > result.loc[i, 'is_Gryffindor']
+            and result.loc[i, 'is_Ravenclaw'] > result.loc[i, 'is_Slytherin']
+            and result.loc[i, 'is_Ravenclaw'] > result.loc[i, 'is_Hufflepuff']
+        ):
             result.loc[i, 'Hogwarts House'] = 'Ravenclaw'
+        else:
+            result.loc[i, 'Hogwarts House'] = 'Gryffindor'
     result.to_csv('houses.csv', index=False)
     return result
 
