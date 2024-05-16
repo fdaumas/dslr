@@ -1,4 +1,5 @@
 import sys
+import copy
 import numpy as np
 import pandas as pd
 
@@ -41,7 +42,7 @@ def logreg_predict(x, theta):
     return y_hat
 
 
-def from_y_hats_to_house(y_hat_GorH, y_hat_GorS):
+def from_y_hats_to_house(y_hat_GorH, y_hat_GorS, df):
     if y_hat_GorH is None or y_hat_GorS is None:
         print("error in logreg_predict")
         return None
@@ -51,6 +52,8 @@ def from_y_hats_to_house(y_hat_GorH, y_hat_GorS):
         'is_Gryffindor_or_Hufflepuff',
         'Hogwarts House'
     ])
+    result['Index'] = df['Index']
+    print(result.shape)
     result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
     result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
     for i in result['Index']:
@@ -111,72 +114,16 @@ def check_args(args):
     return file_test, file_theta
 
 
-def get_thetas(file_theta):
-    thetas = get_data(file_theta)
-    theta_GorH = thetas.loc[0, 'theta_G_or_H']
-    theta_GorH = theta_GorH.replace('[', '')
-    theta_GorH = theta_GorH.replace(']', '')
-    split = theta_GorH.split('\n')
-    theta_GorH = []
-    for s in split:
-        theta_GorH.append(float(s))
-    theta_GorH = np.array(theta_GorH).reshape(-1, 1)
-
-    theta_GorS = thetas.loc[0, 'theta_G_or_S']
-    theta_GorS = theta_GorS.replace('[', '')
-    theta_GorS = theta_GorS.replace(']', '')
-    split = theta_GorS.split('\n')
-    theta_GorS = []
-    for s in split:
-        theta_GorS.append(float(s))
-    theta_GorS = np.array(theta_GorS).reshape(-1, 1)
-    return theta_GorH, theta_GorS
-
-
-def get_result(y_hat_GorH, y_hat_GorS, result):
-    if y_hat_GorH is None or y_hat_GorS is None:
-        print("error in logreg_predict")
-        return None
-    result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
-    result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
-
-    print(result)
-
-    for i in result['Index']:
-        if result.loc[i, 'is_Gryffindor_or_Hufflepuff'] >= 0.5:
-            if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
-                result.loc[i, 'Hogwarts House'] = 'Gryffindor'
-            else:
-                result.loc[i, 'Hogwarts House'] = 'Hufflepuff'
-        else:
-            if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
-                result.loc[i, 'Hogwarts House'] = 'Slytherin'
-            else:
-                result.loc[i, 'Hogwarts House'] = 'Ravenclaw'
-    result.to_csv('houses.csv', index=False)
-    return result
-
-
 if __name__ == "__main__":
     argv = sys.argv
     file_test, file_theta = check_args(argv)
     df = get_data(file_test)
-    thetas = get_data(file_theta)
     # keep only Herbology and Ancient Runes columns and index
     # need to keep the index because of dropna
     df = df[['Index', 'Herbology', 'Ancient Runes']]
     df = df.dropna()
-
-    # prepare a df of results
-    result = pd.DataFrame(columns=[
-        'Index',  # need to keep the index because of dropna
-        'is_Gryffindor_or_Slytherin',
-        'is_Gryffindor_or_Hufflepuff',
-        'Hogwarts House'
-    ])
-
-    # save the index
-    result['Index'] = df['Index']
+    # copy for keep index after training
+    copy_df = copy.deepcopy(df)
 
     # no need to keep the index to train or predict
     df = df.drop(columns=['Index'])
@@ -189,15 +136,14 @@ if __name__ == "__main__":
 
     x = df.to_numpy()
 
-    # get theta from train
-    theta_GorH, theta_GorS = get_thetas(file_theta)
+    theta_GorH, theta_GorS = from_theta_csv_to_np(file_theta)
 
     # get predictions
     y_hat_GorH = logreg_predict(x, theta_GorH)
     y_hat_GorS = logreg_predict(x, theta_GorS)
-   
-    # get result as df
-    result = get_result(y_hat_GorH, y_hat_GorS, result)
+
+    # from prediction to Hogwarts House
+    result = from_y_hats_to_house(y_hat_GorH, y_hat_GorS, copy_df)
 
     print(result[['Index', 'Hogwarts House']])
     result = result[['Index', 'Hogwarts House']]
