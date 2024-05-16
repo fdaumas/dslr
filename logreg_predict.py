@@ -55,6 +55,8 @@ def from_y_hats_to_house(y_hat_GorH, y_hat_GorS, df):
     result['Index'] = df['Index']
     result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
     result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
+    print(f"'is_Gryffindor_or_Hufflepuff' min = {result['is_Gryffindor_or_Hufflepuff'].min()} and max {result['is_Gryffindor_or_Hufflepuff'].max()}")
+    print(f"'is_Gryffindor_or_Slytherin' min = {result['is_Gryffindor_or_Slytherin'].min()} and max {result['is_Gryffindor_or_Slytherin'].max()}")
     for i in result['Index']:
         if result.loc[i, 'is_Gryffindor_or_Hufflepuff'] >= 0.5:
             if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
