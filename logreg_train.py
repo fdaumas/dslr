@@ -6,6 +6,7 @@ from logreg_predict import logreg_predict
 from getData import get_data
 from describe import describe
 from tools import df_to_is_G_or_H, df_to_is_G_or_S, add_intercept
+from tools import df_to_is_G, df_to_is_S, df_to_is_H, df_to_is_R
 from color import red, green, yellow, blue, reset, bold
 
 
@@ -81,7 +82,7 @@ def fit_(theta, alpha, max_iter, x, y):
     if x.ndim != 2 or y.ndim != 2 or theta.ndim != 2:
         print("x.ndim != 2 or y.ndim != 2 or self.theta.ndim != 2")
         return None
-    if alpha > 1 or alpha < 0 or max_iter < 1:
+    if alpha > 1000 or alpha < 0 or max_iter < 1:
         print("alpha too big or negative or max_iter <= 0")
         return None
     if x.size == 0 or y.size == 0 or theta.size == 0:
@@ -111,8 +112,12 @@ def logreg_train(df):
     tmp_df = copy.deepcopy(df)
     tmp_df = tmp_df[['Hogwarts House', 'Herbology', 'Ancient Runes']]
     tmp_df = tmp_df.dropna()
-    gryffindor_or_hufflepuff_df = df_to_is_G_or_H(tmp_df)
-    gryffindor_or_slytherin_df = df_to_is_G_or_S(tmp_df)
+    G_df = df_to_is_G(tmp_df)
+    S_df = df_to_is_S(tmp_df)
+    H_df = df_to_is_H(tmp_df)
+    R_df = df_to_is_R(tmp_df)
+    # gryffindor_or_hufflepuff_df = df_to_is_G_or_H(tmp_df)
+    # gryffindor_or_slytherin_df = df_to_is_G_or_S(tmp_df)
     note_df = copy.deepcopy(tmp_df)
     note_df = note_df[['Ancient Runes', 'Herbology']]
     describe_df = describe(note_df, ['Ancient Runes', 'Herbology'])
@@ -122,22 +127,41 @@ def logreg_train(df):
             describe_df[col]['max'] - describe_df[col]['min']
         )
     x = note_df.to_numpy()
-    y_G_or_H = gryffindor_or_hufflepuff_df[['is_Gryffindor_or_Hufflepuff']].to_numpy()
-    y_G_or_S = gryffindor_or_slytherin_df[['is_Gryffindor_or_Slytherin']].to_numpy()
+    # y_G_or_H = gryffindor_or_hufflepuff_df[['is_Gryffindor_or_Hufflepuff']].to_numpy()
+    # y_G_or_S = gryffindor_or_slytherin_df[['is_Gryffindor_or_Slytherin']].to_numpy()
+    y_G = G_df[['is_Gryffindor']].to_numpy()
+    y_S = S_df[['is_Slytherin']].to_numpy()
+    y_H = H_df[['is_Hufflepuff']].to_numpy()
+    y_R = R_df[['is_Ravenclaw']].to_numpy()
     # print(describe_df)
     # print(gryffindor_or_hufflepuff_df)
     # print(note_df)
-    max_iter = 1000
-    learning_rate = 0.01
-    theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
-    theta_G_or_H = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_H)
-    theta_G_or_S = np.array([1, 1, 1]).reshape(-1, 1)
-    theta_G_or_S = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_S)
+    max_iter = 10000
+    learning_rate = 10.0
+    print(f"max_iter = {max_iter} and learning_rate = {learning_rate}")
+    theta_G = np.array([1, 1, 1]).reshape(-1, 1)
+    theta_G = fit_(theta_G, learning_rate, max_iter, x, y_G)
+    theta_S = np.array([1, 1, 1]).reshape(-1, 1)
+    theta_S = fit_(theta_S, learning_rate, max_iter, x, y_S)
+    theta_H = np.array([1, 1, 1]).reshape(-1, 1)
+    theta_H = fit_(theta_H, learning_rate, max_iter, x, y_H)
+    theta_R = np.array([1, 1, 1]).reshape(-1, 1)
+    theta_R = fit_(theta_R, learning_rate, max_iter, x, y_R)
+
+    # theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
+    # theta_G_or_H = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_H)
+    # theta_G_or_S = np.array([1, 1, 1]).reshape(-1, 1)
+    # theta_G_or_S = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_S)
     # print(f"theta_G_or_H = {theta_G_or_H}")
     # print(f"theta_G_or_S = {theta_G_or_S}")
-    theta_df = pd.DataFrame(index=[0], columns=['theta_G_or_H', 'theta_G_or_S'])
-    theta_df.loc[0, 'theta_G_or_H'] = theta_G_or_H
-    theta_df.loc[0, 'theta_G_or_S'] = theta_G_or_S
+
+    theta_df = pd.DataFrame(index=[0], columns=['theta_G', 'theta_S', 'theta_H', 'theta_R'])
+    theta_df.loc[0, 'theta_G'] = theta_G
+    theta_df.loc[0, 'theta_S'] = theta_S
+    theta_df.loc[0, 'theta_H'] = theta_H
+    theta_df.loc[0, 'theta_R'] = theta_R
+    # theta_df.loc[0, 'theta_G_or_H'] = theta_G_or_H
+    # theta_df.loc[0, 'theta_G_or_S'] = theta_G_or_S
     theta_df.to_csv('theta.csv')
 
 

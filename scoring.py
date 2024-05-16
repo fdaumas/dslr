@@ -39,10 +39,10 @@ def scoring(y_house, y_train):
     m = y_house.shape[0]
     correct = 0
     for i in range(m):
-        if y_house[i] != y_train[i]:
-            print_house(y_house[i], ' | ')
-            print_house(y_train[i], '\n')
-            print(reset + f"index = {i}")
+        # if y_house[i] != y_train[i]:
+        #     print_house(y_house[i], ' | ')
+        #     print_house(y_train[i], '\n')
+        #     print(reset + f"index = {i}")
         if y_house[i] == y_train[i]:
             correct += 1
     print(correct)
@@ -69,23 +69,35 @@ def predict_train():
 
     x = df.to_numpy()
 
-    theta_GorH, theta_GorS = from_theta_csv_to_np('theta.csv')
+    theta_G, theta_S, theta_H, theta_R = from_theta_csv_to_np('theta.csv')
 
     # get predictions
-    y_hat_GorH = logreg_predict(x, theta_GorH)
-    if y_hat_GorH is None:
+    y_hat_G = logreg_predict(x, theta_G)
+    if y_hat_G is None:
         print("error in logreg_predict")
         exit()
-    y_hat_GorS = logreg_predict(x, theta_GorS)
-    if y_hat_GorS is None:
+    y_hat_S = logreg_predict(x, theta_S)
+    if y_hat_S is None:
         print("error in logreg_predict")
         exit()
+    y_hat_H = logreg_predict(x, theta_H)
+    if y_hat_H is None:
+        print("error in logreg_predict")
+        exit()
+    y_hat_R = logreg_predict(x, theta_R)
+    if y_hat_R is None:
+        print("error in logreg_predict")
+        exit()
+    # y_hat_GorS = logreg_predict(x, theta_GorS)
+    # if y_hat_GorS is None:
+    #     print("error in logreg_predict")
+    #     exit()
 
     # from prediction to Hogwarts House
-    result = from_y_hats_to_house(y_hat_GorH, y_hat_GorS, copy_df)
+    result = from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, copy_df)
 
     result = result[['Index', 'Hogwarts House']]
-    print(result)
+    # print(result)
     return result
 
 
@@ -97,7 +109,7 @@ if __name__ == "__main__":
 
     df_house = predict_train()
     df_house.dropna()
-    print(df_house.head(40))
+    # print(df_house.head(40))
     # df_house = df_train[["Hogwarts House", "Index"]]
 
     y_train = df_train["Hogwarts House"].to_numpy()
