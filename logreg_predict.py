@@ -53,7 +53,6 @@ def from_y_hats_to_house(y_hat_GorH, y_hat_GorS, df):
         'Hogwarts House'
     ])
     result['Index'] = df['Index']
-    print(result.shape)
     result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
     result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
     for i in result['Index']:

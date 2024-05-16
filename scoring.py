@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import copy
 
-from color import red, yellow, green, blue, reset
+from color import red, yellow, green, blue, reset, bold
 from getData import get_data
 from describe import describe
 from logreg_predict import logreg_predict, from_theta_csv_to_np
@@ -16,7 +16,7 @@ def print_house(house, end):
         print(green + house, end=end)
     if house == 'Hufflepuff':
         print(yellow + house, end=end)
-    if house == 'RavenClaw':
+    if house == 'Ravenclaw':
         print(blue + house, end=end)
 
 
@@ -39,9 +39,10 @@ def scoring(y_house, y_train):
     m = y_house.shape[0]
     correct = 0
     for i in range(m):
-        print_house(y_house[i], ' | ')
-        print_house(y_train[i], '\n')
-        print(reset + f"index = {i}")
+        if y_house[i] != y_train[i]:
+            print_house(y_house[i], ' | ')
+            print_house(y_train[i], '\n')
+            print(reset + f"index = {i}")
         if y_house[i] == y_train[i]:
             correct += 1
     print(correct)
@@ -90,13 +91,14 @@ def predict_train():
 
 if __name__ == "__main__":
     df_train = get_data("datasets/dataset_train.csv")
-    df_train.dropna()
+    df_train = df_train[['Index', 'Hogwarts House', 'Herbology', 'Ancient Runes']]
+    df_train = df_train.dropna()
     df_train = df_train[["Hogwarts House", "Index"]]
 
     df_house = predict_train()
     df_house.dropna()
     print(df_house.head(40))
-    df_house = df_train[["Hogwarts House", "Index"]]
+    # df_house = df_train[["Hogwarts House", "Index"]]
 
     y_train = df_train["Hogwarts House"].to_numpy()
     y_house = df_house["Hogwarts House"].to_numpy()
