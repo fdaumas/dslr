@@ -96,3 +96,64 @@ def df_to_is_G_or_H(df):
     ] = 1
     new_df = new_df.drop(columns=['Hogwarts House'])
     return new_df
+
+
+
+def df_to_is_G(df):
+    """Change 'Hogward House' column to 'is_Gryffindor' column.
+        Args:
+            df : dataframe
+        Returns:
+            A new df with 'Hogward House' column changed to
+            'is_Gryffindor_or_Hufflepuff' column
+    """
+    new_df = copy.deepcopy(df)
+    new_df['is_Gryffindor'] = 0
+    new_df.loc[df['Hogwarts House'] == 'Gryffindor', 'is_Gryffindor'] = 1
+    new_df = new_df.drop(columns=['Hogwarts House'])
+    return new_df
+
+
+def df_to_is_H(df):
+    """Change 'Hogward House' column to 'is_Hufflepuff' column.
+        Args:
+            df : dataframe
+        Returns:
+            A new df with 'Hogward House' column changed to
+            'is_Hufflepuff' column
+    """
+    new_df = copy.deepcopy(df)
+    new_df['is_Hufflepuff'] = 0
+    new_df.loc[df['Hogwarts House'] == 'Hufflepuff', 'is_Hufflepuff'] = 1
+    new_df = new_df.drop(columns=['Hogwarts House'])
+    return new_df
+
+
+def df_to_is_S(df):
+    """Change 'Hogward House' column to 'is_Slytherin' column.
+        Args:
+            df : dataframe
+        Returns:
+            A new df with 'Hogward House' column changed to
+            'is_Slytherin' column
+    """
+    new_df = copy.deepcopy(df)
+    new_df['is_Slytherin'] = 0
+    new_df.loc[df['Hogwarts House'] == 'Slytherin', 'is_Slytherin'] = 1
+    new_df = new_df.drop(columns=['Hogwarts House'])
+    return new_df
+
+
+def df_to_is_R(df):
+    """Change 'Hogward House' column to 'is_Ravenclaw' column.
+        Args:
+            df : dataframe
+        Returns:
+            A new df with 'Hogward House' column changed to
+            'is_Ravenclaw' column
+    """
+    new_df = copy.deepcopy(df)
+    new_df['is_Ravenclaw'] = 0
+    new_df.loc[df['Hogwarts House'] == 'Ravenclaw', 'is_Ravenclaw'] = 1
+    new_df = new_df.drop(columns=['Hogwarts House'])
+    return new_df
