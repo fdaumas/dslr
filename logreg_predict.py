@@ -10,7 +10,6 @@ from color import red, green, yellow, blue, reset
 from statsTools import min, max
 
 
-# from bootcamp machine learning module 08 ex03
 def logreg_predict(x, theta):
     """Computes the vector of prediction y_hat from two non-empty numpy.ndarray
     Args:
@@ -43,16 +42,12 @@ def logreg_predict(x, theta):
     return y_hat
 
 
-# def from_y_hats_to_house(y_hat_GorH, y_hat_GorS, df):
 def from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, df):
-    # if y_hat_GorH is None or y_hat_GorS is None:
     if y_hat_G is None or y_hat_S is None or y_hat_H is None or y_hat_R is None:
         print("error in logreg_predict")
         return None
     result = pd.DataFrame(columns=[
         'Index',
-        # 'is_Gryffindor_or_Slytherin',
-        # 'is_Gryffindor_or_Hufflepuff',
         'is_Gryffindor',
         'is_Slytherin',
         'is_Hufflepuff',
@@ -60,26 +55,11 @@ def from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, df):
         'Hogwarts House'
     ])
     result['Index'] = df['Index']
-    # result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
     result['is_Gryffindor'] = y_hat_G
     result['is_Slytherin'] = y_hat_S
     result['is_Hufflepuff'] = y_hat_H
     result['is_Ravenclaw'] = y_hat_R
-    # print(f"'is_Gryffindor_or_Hufflepuff' min = {result['is_Gryffindor_or_Hufflepuff'].min()} and max {result['is_Gryffindor_or_Hufflepuff'].max()}")
-    # mid_GorH = (min(result, 'is_Gryffindor_or_Hufflepuff') + max(result, 'is_Gryffindor_or_Hufflepuff') - min(result, 'is_Gryffindor_or_Hufflepuff')) / 2
-    # print(f"'is_Gryffindor_or_Slytherin' min = {result['is_Gryffindor_or_Slytherin'].min()} and max {result['is_Gryffindor_or_Slytherin'].max()}")
-    # mid_GorS = (min(result, 'is_Gryffindor_or_Slytherin') + max(result, 'is_Gryffindor_or_Slytherin') - min(result, 'is_Gryffindor_or_Slytherin')) / 2
     for i in result['Index']:
-        # if result.loc[i, 'is_Gryffindor_or_Hufflepuff'] >= mid_GorH:
-        #     if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= mid_GorS:
-        #         result.loc[i, 'Hogwarts House'] = 'Gryffindor'
-        #     else:
-        #         result.loc[i, 'Hogwarts House'] = 'Hufflepuff'
-        # else:
-        #     if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= mid_GorS:
-        #         result.loc[i, 'Hogwarts House'] = 'Slytherin'
-        #     else:
-        #         result.loc[i, 'Hogwarts House'] = 'Ravenclaw'
         if (
             result.loc[i, 'is_Gryffindor'] > result.loc[i, 'is_Slytherin']
             and result.loc[i, 'is_Gryffindor'] > result.loc[i, 'is_Hufflepuff']
@@ -104,7 +84,7 @@ def from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, df):
     return result
 
 
-def from_theta_csv_to_np(file_theta): #
+def from_theta_csv_to_np(file_theta):
     thetas = get_data(file_theta)
     theta_G = thetas.loc[0, 'theta_G']
     theta_G = theta_G.replace('[', '')
@@ -170,16 +150,31 @@ if __name__ == "__main__":
     argv = sys.argv
     file_test, file_theta = check_args(argv)
     df = get_data(file_test)
-    # keep only Herbology and Ancient Runes columns and index
+    # keep only 8 schools subject columns and index
     # need to keep the index because of dropna
-    df = df[['Index', 'Herbology', 'Ancient Runes']]
+    df = df[['Index',
+             'Herbology',
+             'Ancient Runes',
+             'Astronomy',
+             'Defense Against the Dark Arts',
+             'Charms',
+             'Divination',
+             'Potions',
+             'History of Magic']]
     df = df.dropna()
     # copy for keep index after training
     copy_df = copy.deepcopy(df)
 
     # no need to keep the index to train or predict
     df = df.drop(columns=['Index'])
-    describe_df = describe(df, ['Ancient Runes', 'Herbology'])
+    describe_df = describe(df, ['Herbology',
+                                'Ancient Runes',
+                                'Astronomy',
+                                'Defense Against the Dark Arts',
+                                'Charms',
+                                'Divination',
+                                'Potions',
+                                'History of Magic'])
     for col in df:
         df[[col]] = (
             df[[col]] - describe_df[col]['min']) / (

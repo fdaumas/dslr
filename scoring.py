@@ -1,8 +1,7 @@
 import numpy as np
-import pandas as pd
 import copy
 
-from color import red, yellow, green, blue, reset, bold
+from color import red, yellow, green, blue, reset
 from getData import get_data
 from describe import describe
 from logreg_predict import logreg_predict, from_theta_csv_to_np
@@ -39,10 +38,10 @@ def scoring(y_house, y_train):
     m = y_house.shape[0]
     correct = 0
     for i in range(m):
-        # if y_house[i] != y_train[i]:
-        #     print_house(y_house[i], ' | ')
-        #     print_house(y_train[i], '\n')
-        #     print(reset + f"index = {i}")
+        if y_house[i] != y_train[i]:
+            print_house(y_house[i], ' | ')
+            print_house(y_train[i], '\n')
+            print(reset + f"index = {i}")
         if y_house[i] == y_train[i]:
             correct += 1
     print(correct)
@@ -51,16 +50,31 @@ def scoring(y_house, y_train):
 
 def predict_train():
     df = get_data("datasets/dataset_train.csv")
-    # keep only Herbology and Ancient Runes columns and index
+    # keep only 8 school subject columns and index
     # need to keep the index because of dropna
-    df = df[['Index', 'Herbology', 'Ancient Runes']]
+    df = df[['Index',
+             'Herbology',
+             'Ancient Runes',
+             'Astronomy',
+             'Defense Against the Dark Arts',
+             'Charms',
+             'Divination',
+             'Potions',
+             'History of Magic']]
     df = df.dropna()
     # copy for keep index after training
     copy_df = copy.deepcopy(df)
 
     # no need to keep the index to train or predict
     df = df.drop(columns=['Index'])
-    describe_df = describe(df, ['Ancient Runes', 'Herbology'])
+    describe_df = describe(df, ['Herbology',
+                                'Ancient Runes',
+                                'Astronomy',
+                                'Defense Against the Dark Arts',
+                                'Charms',
+                                'Divination',
+                                'Potions',
+                                'History of Magic'])
     for col in df:
         df[[col]] = (
             df[[col]] - describe_df[col]['min']) / (
@@ -88,10 +102,6 @@ def predict_train():
     if y_hat_R is None:
         print("error in logreg_predict")
         exit()
-    # y_hat_GorS = logreg_predict(x, theta_GorS)
-    # if y_hat_GorS is None:
-    #     print("error in logreg_predict")
-    #     exit()
 
     # from prediction to Hogwarts House
     result = from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_H, y_hat_R, copy_df)
@@ -103,14 +113,21 @@ def predict_train():
 
 if __name__ == "__main__":
     df_train = get_data("datasets/dataset_train.csv")
-    df_train = df_train[['Index', 'Hogwarts House', 'Herbology', 'Ancient Runes']]
+    df_train = df_train[['Index',
+                         'Hogwarts House',
+                         'Herbology',
+                         'Ancient Runes',
+                         'Astronomy',
+                         'Defense Against the Dark Arts',
+                         'Charms',
+                         'Divination',
+                         'Potions',
+                         'History of Magic']]
     df_train = df_train.dropna()
     df_train = df_train[["Hogwarts House", "Index"]]
 
     df_house = predict_train()
     df_house.dropna()
-    # print(df_house.head(40))
-    # df_house = df_train[["Hogwarts House", "Index"]]
 
     y_train = df_train["Hogwarts House"].to_numpy()
     y_house = df_house["Hogwarts House"].to_numpy()
