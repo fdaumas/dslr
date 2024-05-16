@@ -90,23 +90,76 @@ def from_theta_csv_to_np(file_theta):
     return theta_GorH, theta_GorS
 
 
-if __name__ == "__main__":
-    argv = sys.argv
-    if len(argv) < 3:
+def check_args(args):
+    if len(args) < 3:
         print("give 2 .csv file name as argument")
         exit()
-    if argv[1][-4:] != ".csv" or argv[2][-4:] != ".csv":
+    if args[1][-4:] != ".csv" or args[2][-4:] != ".csv":
         print("give .csv file name as argument")
         exit()
-    if argv[1][-8:] == "test.csv":
-        file_test = argv[1]
-        file_theta = argv[2]
-    elif argv[2][-8:] == "test.csv":
-        file_test = argv[2]
-        file_theta = argv[1]
+    if args[1][-8:] == "test.csv" and args[2] == "theta.csv":
+        file_test = args[1]
+        file_theta = args[2]
+    elif args[2][-8:] == "test.csv" and args[1] == "theta.csv":
+        file_test = args[2]
+        file_theta = args[1]
     else:
-        print("give a train.csv file name as argument and other containing theta")
+        print(
+            "give a train.csv file name as argument and other containing theta"
+        )
         exit()
+    return file_test, file_theta
+
+
+def get_thetas(file_theta):
+    thetas = get_data(file_theta)
+    theta_GorH = thetas.loc[0, 'theta_G_or_H']
+    theta_GorH = theta_GorH.replace('[', '')
+    theta_GorH = theta_GorH.replace(']', '')
+    split = theta_GorH.split('\n')
+    theta_GorH = []
+    for s in split:
+        theta_GorH.append(float(s))
+    theta_GorH = np.array(theta_GorH).reshape(-1, 1)
+
+    theta_GorS = thetas.loc[0, 'theta_G_or_S']
+    theta_GorS = theta_GorS.replace('[', '')
+    theta_GorS = theta_GorS.replace(']', '')
+    split = theta_GorS.split('\n')
+    theta_GorS = []
+    for s in split:
+        theta_GorS.append(float(s))
+    theta_GorS = np.array(theta_GorS).reshape(-1, 1)
+    return theta_GorH, theta_GorS
+
+
+def get_result(y_hat_GorH, y_hat_GorS, result):
+    if y_hat_GorH is None or y_hat_GorS is None:
+        print("error in logreg_predict")
+        return None
+    result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
+    result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
+
+    print(result)
+
+    for i in result['Index']:
+        if result.loc[i, 'is_Gryffindor_or_Hufflepuff'] >= 0.5:
+            if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
+                result.loc[i, 'Hogwarts House'] = 'Gryffindor'
+            else:
+                result.loc[i, 'Hogwarts House'] = 'Hufflepuff'
+        else:
+            if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
+                result.loc[i, 'Hogwarts House'] = 'Slytherin'
+            else:
+                result.loc[i, 'Hogwarts House'] = 'Ravenclaw'
+    result.to_csv('houses.csv', index=False)
+    return result
+
+
+if __name__ == "__main__":
+    argv = sys.argv
+    file_test, file_theta = check_args(argv)
     df = get_data(file_test)
     thetas = get_data(file_theta)
     # keep only Herbology and Ancient Runes columns and index
@@ -137,81 +190,15 @@ if __name__ == "__main__":
     x = df.to_numpy()
 
     # get theta from train
-    theta_GorH = thetas.loc[0, 'theta_G_or_H']
-    theta_GorH = theta_GorH.replace('[', '')
-    theta_GorH = theta_GorH.replace(']', '')
-    split = theta_GorH.split('\n')
-    theta_GorH = []
-    for s in split:
-        theta_GorH.append(float(s))
-    theta_GorH = np.array(theta_GorH).reshape(-1, 1)
-
-    theta_GorS = thetas.loc[0, 'theta_G_or_S']
-    theta_GorS = theta_GorS.replace('[', '')
-    theta_GorS = theta_GorS.replace(']', '')
-    split = theta_GorS.split('\n')
-    theta_GorS = []
-    for s in split:
-        theta_GorS.append(float(s))
-    theta_GorS = np.array(theta_GorS).reshape(-1, 1)
+    theta_GorH, theta_GorS = get_thetas(file_theta)
 
     # get predictions
     y_hat_GorH = logreg_predict(x, theta_GorH)
-    if y_hat_GorH is None:
-        print("error in logreg_predict")
-        exit()
     y_hat_GorS = logreg_predict(x, theta_GorS)
-    if y_hat_GorS is None:
-        print("error in logreg_predict")
-        exit()
+   
+    # get result as df
+    result = get_result(y_hat_GorH, y_hat_GorS, result)
 
-    # from prediction to Hogwarts House
-    result['is_Gryffindor_or_Slytherin'] = y_hat_GorS
-    result['is_Gryffindor_or_Hufflepuff'] = y_hat_GorH
-
-    print(result)
-
-    for i in result['Index']:
-    # if result['is_Gryffindor_or_Hufflepuff'][i] >= 0.5:
-    #     if result['is_Gryffindor_or_Slytherin'][i] >= 0.5:
-    #         result['Hogwarts House'][i] = 'Gryffindor'
-    #     else:
-    #         result['Hogwarts House'][i] = 'Hufflepuff'
-    # else:
-    #     if result['is_Gryffindor_or_Slytherin'][i] >= 0.5:
-    #         result['Hogwarts House'][i] = 'Slytherin'
-    #     else:
-    #         result['Hogwarts House'][i] = 'Ravenclaw'
-        if result.loc[i, 'is_Gryffindor_or_Hufflepuff'] >= 0.5:
-            if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
-                result.loc[i, 'Hogwarts House'] = 'Gryffindor'
-            else:
-                result.loc[i, 'Hogwarts House'] = 'Hufflepuff'
-        else:
-            if result.loc[i, 'is_Gryffindor_or_Slytherin'] >= 0.5:
-                result.loc[i, 'Hogwarts House'] = 'Slytherin'
-            else:
-                result.loc[i, 'Hogwarts House'] = 'Ravenclaw'
-    # result.loc[
-    #     result['is_Gryffindor_or_Hufflepuff'] < 0.5
-    #     and result['is_Gryffindor_or_Slytherin'] >= 0.5,
-    #     'Hogwarts House'
-    # ] = 'Slytherin'
-    # result.loc[
-    #     result['is_Gryffindor_or_Hufflepuff'] >= 0.5
-    #     and result['is_Gryffindor_or_Slytherin'] < 0.5,
-    #     'Hogwarts House'
-    # ] = 'Hufflepuff'
-    # result.loc[
-    #     result['is_Gryffindor_or_Hufflepuff'] >= 0.5
-    #     and result['is_Gryffindor_or_Slytherin'] >= 0.5,
-    #     'Hogwarts House'
-    # ] = 'Gryffindor'
-    # result.loc[
-    #     result['is_Gryffindor_or_Hufflepuff'] < 0.5
-    #     and result['is_Gryffindor_or_Slytherin'] < 0.5,
-    #     'Hogwarts House'
-    # ] = 'Ravenclaw'
     print(result[['Index', 'Hogwarts House']])
     result = result[['Index', 'Hogwarts House']]
     print(result)
