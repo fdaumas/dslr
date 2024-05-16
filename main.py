@@ -8,6 +8,10 @@ from histogram import histogram
 from scatter_plot import scatter_plot
 from pair_plot import pair_plot
 from color import red, green, yellow, blue, reset, bold
+from logreg_train import logreg_train
+from scoring import predict_train, scoring
+from logreg_predict import from_theta_csv_to_np
+from logreg_predict import from_y_hats_to_house, logreg_predict
 
 
 def check_args(argv):
@@ -95,11 +99,84 @@ def menu_lvl2_scatter_plot(org_list_col_train):
     return org_list_col_train[col1-1], list_col[int(col2)-1]
 
 
+def machine_learning(df_train, df_test):
+    # train
+    logreg_train(df_train)
+
+    # scoring
+    df_tmp = copy.deepcopy(df_train)
+    df_tmp = df_tmp[[
+        'Index',
+        'Hogwarts House',
+        'Herbology',
+        'Ancient Runes',
+        'Astronomy',
+        'Defense Against the Dark Arts',
+        'Charms',
+        'Divination',
+        'Potions',
+        'History of Magic'
+    ]]
+    df_tmp = df_tmp.dropna()
+    df_tmp = df_tmp[["Hogwarts House", "Index"]]
+    df_house = predict_train()
+    df_house.dropna()
+    y_train = df_tmp["Hogwarts House"].to_numpy()
+    y_house = df_house["Hogwarts House"].to_numpy()
+    print(reset + '')
+    print(scoring(y_house, y_train))
+
+    # predict
+    df_test = df_test[[
+        'Index',
+        'Herbology',
+        'Ancient Runes',
+        'Astronomy',
+        'Defense Against the Dark Arts',
+        'Charms',
+        'Divination',
+        'Potions',
+        'History of Magic'
+    ]]
+    df_test = df_test.dropna()
+    copy_df = copy.deepcopy(df_test)
+    df_test = df_test.drop(columns=['Index'])
+    describe_df = describe(df_test, [
+        'Herbology',
+        'Ancient Runes',
+        'Astronomy',
+        'Defense Against the Dark Arts',
+        'Charms',
+        'Divination',
+        'Potions',
+        'History of Magic'
+    ])
+    for col in df_test:
+        df_test[[col]] = (
+            df_test[[col]] - describe_df[col]['min']) / (
+            describe_df[col]['max'] - describe_df[col]['min']
+        )
+
+    x = df_test.to_numpy()
+    theta_G, theta_S, theta_H, theta_R = from_theta_csv_to_np("theta.csv")
+
+    y_hat_G = logreg_predict(x, theta_G)
+    y_hat_S = logreg_predict(x, theta_S)
+    y_hat_H = logreg_predict(x, theta_H)
+    y_hat_R = logreg_predict(x, theta_R)
+
+    result = from_y_hats_to_house(y_hat_G, y_hat_S, y_hat_R, y_hat_H, copy_df)
+
+    result = result[['Index', 'Hogwarts House']]
+    result.to_csv('houses.csv', index=False)
+
+
 if __name__ == '__main__':
     argv = sys.argv
     file_train, file_test = check_args(argv)
-    
+
     df_train = get_data(file_train)
+    df_test = get_data(file_test)
     org_list_col_train = list_numerical(df_train)
 
     while True:
@@ -130,7 +207,7 @@ if __name__ == '__main__':
                         exit()
                 continue
             case 3:  # Machine Learning
-                # TODO
+                machine_learning(df_train, df_test)
                 continue
             case 4:  # Quit
                 exit()
