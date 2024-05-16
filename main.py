@@ -49,7 +49,7 @@ def menu_lvl0():
     while not ex.isdigit() or int(ex) < 1 or int(ex) > 4:
         for choice in list_ex:
             print(green + f"{list_ex.index(choice)+1}. {choice}" + reset)
-        ex = input(bold + "Do you want to see: " + reset)
+        ex = input(bold + "What do you want to see: " + reset)
     ex = int(ex)
     return ex
 
@@ -67,7 +67,7 @@ def menu_lvl1_data_visu():
     while not visu.isdigit() or int(visu) < 1 or int(visu) > 5:
         for choice in list_visu:
             print(yellow + f"{list_visu.index(choice)+1}. {choice}" + reset)
-        visu = input(bold + "Do you want to see: " + reset)
+        visu = input(bold + "What do you want to see: " + reset)
     visu = int(visu)
     return visu
 
