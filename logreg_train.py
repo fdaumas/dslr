@@ -136,17 +136,21 @@ def logreg_train(df):
     # print(describe_df)
     # print(gryffindor_or_hufflepuff_df)
     # print(note_df)
-    max_iter = 10000
+    max_iter = 10000 - 1
     learning_rate = 10.0
     print(f"max_iter = {max_iter} and learning_rate = {learning_rate}")
     theta_G = np.array([1, 1, 1]).reshape(-1, 1)
     theta_G = fit_(theta_G, learning_rate, max_iter, x, y_G)
+    print(f"theta_G = {theta_G}")
     theta_S = np.array([1, 1, 1]).reshape(-1, 1)
     theta_S = fit_(theta_S, learning_rate, max_iter, x, y_S)
+    print(f"theta_S = {theta_S}")
     theta_H = np.array([1, 1, 1]).reshape(-1, 1)
     theta_H = fit_(theta_H, learning_rate, max_iter, x, y_H)
+    print(f"theta_H = {theta_H}")
     theta_R = np.array([1, 1, 1]).reshape(-1, 1)
     theta_R = fit_(theta_R, learning_rate, max_iter, x, y_R)
+    print(f"theta_R = {theta_R}")
 
     # theta_G_or_H = np.array([1, 1, 1]).reshape(-1, 1)
     # theta_G_or_H = fit_(theta_G_or_H, learning_rate, max_iter, x, y_G_or_H)
